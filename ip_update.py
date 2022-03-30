@@ -1,19 +1,19 @@
 import requests
-from passwords import return_username, return_password
+from passwords import return_credentials
 from datetime import datetime
 import os
 
 my_ip = requests.get('https://myip.dnsomatic.com/')
 my_ip = str(my_ip.text)
 
-url = f'https://{return_username(1)}:{return_password(1)}@domains.google.com/nic/update?hostname=bengarlock.com&myip={my_ip}'
-update_ip_response1 = requests.post(url)
-print(update_ip_response1.text)
+def update_ip():
+    credentials = return_credentials()
+    for domain in credentials:
+        url = f'https://{domain["username"]}:{domain["password"]}@domains.google.com/nic/update?hostname={domain["hostname"]}&myip={my_ip}'
+        response = requests.post(url)
+        with open(os.path.join(os.getcwd(), 'ip_log.txt'), 'a', encoding='utf-8') as file:
+            file.write(f'{datetime.now()}       {domain["hostname"]}          {response.text} \n')
 
-url = f'https://{return_username(2)}:{return_password(2)}@domains.google.com/nic/update?hostname=www.bengarlock.com&myip={my_ip}'
-update_ip_response2 = requests.post(url)
-print(update_ip_response2.text)
 
-with open(os.path.join(os.getcwd(), 'ip_log.txt'), 'a', encoding='utf-8') as file:
-    file.write(f'{datetime.now()}       bengarlock.com          {update_ip_response1.text} \n')
-    file.write(f'{datetime.now()}       www.bengarlock.com      {update_ip_response2.text} \n')
+if __name__ == "__main__":
+    update_ip()
