@@ -12,7 +12,7 @@ def update_ip():
         url = f'https://{domain["username"]}:{domain["password"]}@domains.google.com/nic/update?hostname={domain["hostname"]}&myip={my_ip}'
         response = requests.post(url)
         print(response.text)
-        with open(os.path.join(os.getcwd(), 'ip_log.txt'), 'a', encoding='utf-8') as file:
+        with open(os.path.join(os.getcwd(), '/home/deploy/Projects/ip_update_v2/ip_log.txt'), 'a', encoding='utf-8') as file:
             file.write(f'{datetime.now()}       {domain["hostname"]}          {response.text} \n')
 
 
